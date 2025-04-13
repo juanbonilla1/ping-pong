@@ -8,8 +8,8 @@
  * - Jugador 1 (izquierda): W (arriba) y S (abajo)
  * - Jugador 2 (derecha): Flechas ↑ y ↓
  * 
- * Autor: [Tu Nombre]
- * Fecha: [Fecha Actual]
+ * Autor: juan esteban bonilla
+ * 
  */
 
 import javax.swing.*;
