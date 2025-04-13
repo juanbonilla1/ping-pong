@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pong Game</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+        }
+        canvas {
+            border: 1px solid white;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="pong" width="500" height="400"></canvas>
+
+<script>
+    const canvas = document.getElementById("pong");
+    const context = canvas.getContext("2d");
+
+    // Posiciones de las paletas y la pelota
+    let paddle1Y = 100, paddle2Y = 100;
+    let ballX = 250, ballY = 150;
+    let ballXSpeed = 2, ballYSpeed = 2;
+
+    // Velocidad de las paletas
+    const paddleSpeed = 3;
+
+    // Controles de teclas
+    let wPressed = false, sPressed = false;
+    let upPressed = false, downPressed = false;
+
+    // Dibuja los elementos del juego
+    function draw() {
+        // Fondo
+        context.fillStyle = "#000";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Paleta izquierda
+        context.fillStyle = "#fff";
+        context.fillRect(20, paddle1Y, 10, 60);
+
+        // Paleta derecha
+        context.fillStyle = "#fff";
+        context.fillRect(470, paddle2Y, 10, 60);
+
+        // Pelota
+        context.beginPath();
+        context.arc(ballX, ballY, 5, 0, Math.PI * 2);
+        context.fillStyle = "#fff";
+        context.fill();
+    }
+
+    // Actualiza el estado del juego
+    function update() {
+        // Movimiento de la paleta izquierda
+        if (wPressed && paddle1Y > 0) paddle1Y -= paddleSpeed;
+        if (sPressed && paddle1Y < canvas.height - 60) paddle1Y += paddleSpeed;
+
+        // Movimiento de la paleta derecha
+        if (upPressed && paddle2Y > 0) paddle2Y -= paddleSpeed;
+        if (downPressed && paddle2Y < canvas.height - 60) paddle2Y += paddleSpeed;
+
+        // Movimiento de la pelota
+        ballX += ballXSpeed;
+        ballY += ballYSpeed;
+
+        // Rebote en los bordes
+        if (ballY <= 0 || ballY >= canvas.height - 5) {
+            ballYSpeed *= -1;
+        }
+
+        // Rebote con las paletas
+        if ((ballX <= 30 && ballY + 5 >= paddle1Y && ballY <= paddle1Y + 60) ||
+            (ballX >= 460 && ballY + 5 >= paddle2Y && ballY <= paddle2Y + 60)) {
+            ballXSpeed *= -1;
+        }
+
+        // Reiniciar la pelota si se sale por los lados
+        if (ballX < 0 || ballX > canvas.width) {
+            ballX = 250;
+            ballY = 150;
+            ballXSpeed = -ballXSpeed;
+        }
+    }
+
+    // Actualiza el juego y dibuja
+    function gameLoop() {
+        update();
+        draw();
+        requestAnimationFrame(gameLoop); // Llama a la función de actualización continuamente
+    }
+
+    // Detectar teclas presionadas
+    document.addEventListener("keydown", function(e) {
+        if (e.key === "w") wPressed = true;
+        if (e.key === "s") sPressed = true;
+        if (e.key === "ArrowUp") upPressed = true;
+        if (e.key === "ArrowDown") downPressed = true;
+    });
+
+    // Detectar teclas liberadas
+    document.addEventListener("keyup", function(e) {
+        if (e.key === "w") wPressed = false;
+        if (e.key === "s") sPressed = false;
+        if (e.key === "ArrowUp") upPressed = false;
+        if (e.key === "ArrowDown") downPressed = false;
+    });
+
+    // Iniciar el juego
+    gameLoop();
+</script>
+
+</body>
+</html>
